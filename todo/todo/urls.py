@@ -22,7 +22,7 @@ from rest_framework import routers
 from tasks.views import TaskViewSet
 
 
-router = routers.SimpleRouter()
+router = routers.DefaultRouter()
 router.register(r'tasks', TaskViewSet)
 
 
