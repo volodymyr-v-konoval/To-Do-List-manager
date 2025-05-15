@@ -17,16 +17,20 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from drf_spectacular.views import (SpectacularAPIView,
+                                   SpectacularRedocView,
+                                   SpectacularSwaggerView,)
 from rest_framework import routers
 from rest_framework_simplejwt.views import (TokenObtainPairView, 
                                             TokenRefreshView,
-                                            TokenVerifyView)
+                                            TokenVerifyView,)
 
-from tasks.views import TaskViewSet, RegisterAPIView
+from tasks.views import TaskViewSet, RegisterAPIView, TaskAssignmentViewSet
 
 
 router = routers.DefaultRouter()
 router.register(r'tasks', TaskViewSet)
+router.register(r'task-assignments', TaskAssignmentViewSet, basename='task-assignment')
 
 
 urlpatterns = [
@@ -37,4 +41,13 @@ urlpatterns = [
     path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/v1/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    
+    # OpenAPI schema (JSON)
+    path('api/v1/schema/', SpectacularAPIView.as_view(), name='schema'),
+    
+    # Swagger UI
+    path('api/v1/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    
+    # ReDoc
+    path('api/v1/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
