@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticate
 from .filters import TaskFilter
 from .models import Task, TaskAssignment
 from .serializers import TaskSerializer, UserRegistrationSerializer, TaskAssignmentSerializer
-
+from .tasks import send_assignment_email
 
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
@@ -35,21 +35,11 @@ class TaskAssignmentViewSet(viewsets.ModelViewSet):
         task = task_assignment.task
 
         if user.email:
-            subject = f"You was assigned to the task: {task.title}!"
-            message = f"""
-                Hello, {user.username}!
-                You was assigned as '{task_assignment.role}' for the task:
-                    - Title: {task.title}
-                    - Description: {task.description}
-                    - Due date: {task.due_date}
-                Congradulations!
-                {task.author}!
-            """
-
-            send_mail(
-                subject,
-                message,
-                None,
-                [user.email],
-                fail_silently=False
+            send_assignment_email.delay(
+                user.email,
+                user.username,
+                task.title,
+                task.description,
+                str(task.due_date),
+                task_assignment.role
             )
