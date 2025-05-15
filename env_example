@@ -1,0 +1,12 @@
+#---------------DB Settings-------------
+
+DB_NAME=todo
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_HOST=db
+DB_PORT=5432
+
+#--------------EMAIL Settings-----------
+EMAIL_HOST_USER=email.for.sending.mails@mail.com
+EMAIL_HOST_PASSWORD=pass from your agen
+DEFAULT_FROM_EMAIL=email.for.sending.mails@mail.com

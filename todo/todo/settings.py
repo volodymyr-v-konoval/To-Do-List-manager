@@ -100,6 +100,7 @@ DATABASES = {
         "USER": config("DB_USER"),
         "PASSWORD": config("DB_PASSWORD"),
         "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT")
     }
 }
 
@@ -249,5 +250,5 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 #EMAIL_BACKEND = 'django.core.mail.backend.console.EmailBackend'
 
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://todo-redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://todo-redis:6379/0"
