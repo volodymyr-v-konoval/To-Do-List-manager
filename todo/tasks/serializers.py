@@ -11,7 +11,8 @@ class TaskSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Task
-        fields = ('title', 'description', 'due_date', 'status')
+        fields = ('__all__')
+        read_only_fields = ('slug', 'author')
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):

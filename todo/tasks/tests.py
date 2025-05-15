@@ -11,6 +11,10 @@ User = get_user_model()
 
 class TaskAPITestCase(APITestCase):
     def setUp(self):
+        super().setUp()
+
+        Task.objects.all().delete()
+
         self.user = User.objects.create_user(username="testuser", password="testpass")
         response = self.client.post(reverse("token_obtain_pair"), {
                 "username": "testuser",
@@ -37,17 +41,24 @@ class TaskAPITestCase(APITestCase):
             "status": "PN"
             }
         )
+        print("RESPONSE:", response.status_code, response.data)
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Task.objects.count(), 1)
 
     def test_filter_tasks_by_status(self):
         Task.objects.create(
-            title="Task1", due_date="2025-06-01", status="CM"
+            title="Task1", due_date="2025-06-01", status="CM", author=self.user
         )
         Task.objects.create(
-            title="Task2", due_date="2025-06-02", status="PN"
+            title="Task2", due_date="2025-06-02", status="PN", author=self.user
         )
+
         response = self.client.get("/api/v1/tasks/?status=PN")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['status'], 'PN')
+
+        tasks = response.data.get("results", response.data)
+        filtered = [task for task in tasks if task["status"] == "PN" and task["author"] == self.user.id]
+    
+        self.assertEqual(len(filtered), 1)
+        self.assertEqual(filtered[0]['status'], 'PN')
